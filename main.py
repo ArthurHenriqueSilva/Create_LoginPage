@@ -6,11 +6,12 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return 'index'
+    return render_template('index.html', auth=current_user)
 
 @main.route('/profile')
+@login_required
 def profile():
-    return 'profile'
+    return render_template('profile.html', name=current_user.name)
 
 
 if(__name__ == '__main__'):
@@ -18,5 +19,4 @@ if(__name__ == '__main__'):
     app = create_app()
     with app.app_context():
         db.create_all()
-
-    app.run(debug=True)
+    app.run(debug=True) 

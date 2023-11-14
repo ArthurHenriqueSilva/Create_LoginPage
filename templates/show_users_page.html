@@ -1,0 +1,16 @@
+<!-- show_users_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Users Page</title>
+</head>
+<body>
+    <h2>Enter Admin Password</h2>
+    <form method="post" action="{{ url_for('auth.show_users') }}">
+        <input type="password" name="admin_password" required>
+        <button type="submit">Show Users</button>
+    </form>
+</body>
+</html>

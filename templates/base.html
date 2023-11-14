@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>Flask App - SEMAC 2023</title>
+</head>
+<body>
+    <section class="hero is-fullheight" style="background-color: #c4FCEF;">
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{url_for('main.index')}}" class="navbar-item">
+                                Home
+                            </a>
+
+                            {% if current_user.is_authenticated %}
+                            <a href="{{url_for('main.profile')}}" class="navbar-item">
+                                Profile
+                            </a>
+                            
+                            <a href="{{url_for('auth.show_users_page')}}" class="navbar-item">
+                                Show Users
+                            </a>
+                            {% endif %}
+
+                            {%if not current_user.is_autenticated%}
+                            <a href="{{url_for('auth.login')}}" class="navbar-item">
+                                Login
+                            </a>
+                            
+                            <a href="{{url_for('auth.signup')}}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            {% endif %}
+
+                            {% if current_user.is_autenticated %}
+                            <a href="{{url_form('auth.logout')}}" class="navbar-item">
+                                Logout
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                {%block content%} {%endblock%}
+            </div>
+        </div>
+    </section>
+
+    <div id="userTable" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="box">
+                <h2 class="subtitle">User List</h2>
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in all_users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+</body>
+</html>
