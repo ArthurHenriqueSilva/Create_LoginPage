@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
+from flask import Blueprint, render_template, current_app, redirect, url_for, request, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 from flask_login import login_user, logout_user, login_required, current_user
+import logging
 from __init__ import db
 
 auth = Blueprint('auth', __name__)
@@ -51,24 +52,45 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-
-@auth.route('/show_users_page')
-@login_required
-def show_users_page():
-    return render_template('show_users_page.html')
-
-
-@auth.route('/show_users', methods=['GET', 'POST'])
+@auth.route('/show_users', methods=['POST', 'GET'])
 @login_required
 def show_users():
-    rf = request.form
+    if current_user.name == "admin" and current_user.email == "admin@admin.com":
+        all_users = User.query.all()
+        user_list = [{'id': user.id, 'email': user.email, 'name': user.name} for user in all_users]
 
-    admin_password = rf.get('admin_password')
-    admin_user = User.query.filter_by(name="admin").first()
-    if admin_user:
-        if check_password_hash(admin_user.password, admin_password):
-            all_users = User.query.all()
-            user_list = [{'id':user.id, 'email':user.email, 'name':user.name} for user in all_users]
+        if request.method == 'POST':
             return jsonify(users=user_list)
         else:
-            return jsonify(error='Authentication Failed'), 401
+            return render_template('show_users_page.html', data={'users': user_list})
+    else:
+        return jsonify(error='Authentication Failed'), 401
+    
+
+
+
+@auth.route('/delete_user', methods=['POST', 'GET'])
+@login_required
+def delete_user():
+    if current_user.name != 'admin':
+        flash('Permission denied. Only admin can delete users.')
+        return redirect(url_for('main.index'))
+
+    if request.method == 'GET':
+        all_users = User.query.filter(User.name != 'admin').all()
+        user_list = [{'id': user.id, 'email': user.email, 'name': user.name} for user in all_users]
+        return render_template('delete_user_page.html', data={'users': user_list})
+
+    elif request.method == 'POST':
+        users_to_delete = request.form.getlist('users_to_delete')
+
+        for user_id in users_to_delete:
+            user_to_delete = User.query.get(user_id)
+            if user_to_delete:
+                db.session.delete(user_to_delete)
+
+        db.session.commit()
+        logging.info(f'Selected users {users_to_delete} have been deleted.')
+
+        return 'deleted' 
+        #redirect(url_for('main.index'))
