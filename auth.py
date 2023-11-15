@@ -68,6 +68,7 @@ def show_users():
     
 
 
+from flask import render_template_string
 
 @auth.route('/delete_user', methods=['POST', 'GET'])
 @login_required
@@ -83,7 +84,45 @@ def delete_user():
 
     elif request.method == 'POST':
         users_to_delete = request.form.getlist('users_to_delete')
+        print("Users to delete:", users_to_delete)
+        if not users_to_delete:
+            flash('No users selected for deletion.')
+            return redirect(url_for('auth.delete_user'))
 
+        users_to_delete_details = []
+        for user_id in users_to_delete:
+            user = User.query.get(user_id)
+            if user:
+                users_to_delete_details.append({'id': user.id, 'email': user.email, 'name': user.name})
+
+        return render_template_string(
+            """
+            <h2>Delete Confirmation</h2>
+            <p>You are about to delete the following users:</p>
+            <ul>
+                {% for user in users_to_delete_details %}
+                    <li>ID: {{ user.id }}, Email: {{ user.email }}, Name: {{ user.name }}</li>
+                {% endfor %}
+            </ul>
+            <form method="post" action="{{ url_for('auth.confirm_delete_user') }}">
+                <input type="hidden" name="users_to_delete" value="{{ users_to_delete | join(',') }}">
+                <button type="submit">Confirm Deletion</button>
+            </form>
+            """
+        , users_to_delete_details=users_to_delete_details)
+
+
+@auth.route('/confirm_delete_user', methods=['POST'])
+@login_required
+def confirm_delete_user():
+    users_to_delete = request.form.get('users_to_delete')
+    if not users_to_delete:
+        flash('No users selected for deletion.')
+        return redirect(url_for('auth.delete_user'))
+
+    users_to_delete = users_to_delete.split(',')
+    
+    try:
         for user_id in users_to_delete:
             user_to_delete = User.query.get(user_id)
             if user_to_delete:
@@ -91,6 +130,9 @@ def delete_user():
 
         db.session.commit()
         logging.info(f'Selected users {users_to_delete} have been deleted.')
+        flash('Selected users have been deleted.')
+    except Exception as e:
+        logging.error(f'Error during deletion: {e}')
+        flash('An error occurred during deletion.')
 
-        return 'deleted' 
-        #redirect(url_for('main.index'))
+    return redirect(url_for('main.index'))

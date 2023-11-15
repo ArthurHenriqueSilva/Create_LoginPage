@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container has-text-centered">
         <h2 class="title is-2">Delete User</h2>
-        <form method="post" action="{{ url_for('auth.delete_user') }}">
+        <form method="post" action="{{ url_for('auth.delete_user') }}" enctype="multipart/form-data" >
             {% if 'users' in data %}
                 <h2 class="title is-4">User List</h2>
                 <div class="table-container">
@@ -30,7 +30,6 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                        
                     </table>
                 </div>
             {% endif %}
