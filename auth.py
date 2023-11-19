@@ -18,10 +18,10 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if not user:
-            flash('Please sign up before!')
+            flash('Os dados estao incorretos ou ainda nao nos conhecemos!!')
             return redirect(url_for('auth.signup'))
         elif not check_password_hash(user.password, password):
-            flash('Please check your login details and try again.')
+            flash('Cheque os dados inseridos e tente novamente!.')
             return redirect(url_for('auth.login'))
         login_user(user, remember=remember)
         return redirect(url_for('main.profile'))
@@ -38,7 +38,7 @@ def signup():
         password = rf.get('password')
         user = User.query.filter_by(email=email).first()
         if user:
-            flash('Email address already exists')
+            flash('Esse e-mail ja esta sendo utilizado.')
             return redirect(url_for('auth.signup'))
         new_user = User(email=email, name=name, password=generate_password_hash(password))
         db.session.add(new_user)
@@ -64,7 +64,7 @@ def show_users():
         else:
             return render_template('show_users_page.html', data={'users': user_list})
     else:
-        return jsonify(error='Authentication Failed'), 401
+        return jsonify(error='Autenticacao falhou!'), 401
     
 
 
@@ -84,7 +84,7 @@ def delete_user():
         users_to_delete = request.form.getlist('users_to_delete[]')
 
         if not users_to_delete:
-            flash('No users selected for deletion.')
+            flash('Nao existe usuarios para serem deletados!')
             return redirect(url_for('auth.delete_user'))
 
         try:
@@ -92,9 +92,7 @@ def delete_user():
                 user_to_delete = User.query.get(int(user_id))
                 if user_to_delete:
                     db.session.delete(user_to_delete)
-
             db.session.commit()
-            flash('Selected users have been deleted.')
         except Exception as e:
             flash(f'An error occurred during deletion: {e}')
 

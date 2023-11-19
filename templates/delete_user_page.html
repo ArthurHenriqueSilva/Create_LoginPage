@@ -4,10 +4,10 @@
 
 {% block content %}
     <div class="container has-text-centered">
-        <h2 class="title is-2">Delete User</h2>
+        <h2 class="title is-2">Deletar Usuario</h2>
         <form method="post" action="{{ url_for('auth.delete_user') }}" enctype="multipart/form-data" >
-            {% if 'users' in data %}
-                <h2 class="title is-4">User List</h2>
+            {% if data['users'] %}
+                <h2 class="title is-4">Lista de Usuarios</h2>
                 <div class="table-container">
                     <table class="table is-bordered is-fullwidth">
                         <thead>
@@ -31,13 +31,16 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <div class="field has-addons is-centered">
+                        <div class="control">
+                            <button class="button is-danger" type="submit">Delete Selected Users</button>
+                        </div>
+                    </div>
                 </div>
+            {% else %}
+                <h3 class="title is-3">Tabela de usuários vazia</h3>
             {% endif %}
-            <div class="field has-addons is-centered">
-                <div class="control">
-                    <button class="button is-danger" type="submit">Delete Selected Users</button>
-                </div>
-            </div>
+
         </form>
     </div>
 {% endblock %}
