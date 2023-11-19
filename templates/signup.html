@@ -2,14 +2,14 @@
 
 {%block content%}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Sign Up</h3>
+    <h3 class="title">Cadastro</h3>
     <div class="box">
         {% with messages = get_flashed_messages()%}
             {%if messages%}
             <div class="notification isdanger">
                 {{messages[0]}} <br> Go to 
                 <a href="{{url_for('auth.login')}}">
-                    Login page            
+                    Pagina de Login       
                 </a>            
             </div>
             {% endif %}
@@ -17,21 +17,21 @@
         <form method="POST" action="/signup">
             <div class="field">
                 <div class="control">
-                    <input class="input in-large" type="email" name="email" placeholder="Email">
+                    <input class="input in-large" type="email" name="email" placeholder="Seu E-mail">
                 </div>
             </div>
             <div class="field">
                 <div class="control">
-                    <input class="input in-large" type="text" name="name" id="Name" placeholder="Name">
+                    <input class="input in-large" type="text" name="name" id="Name" placeholder="Seu Nome">
                 </div>
             </div>
             <div class="field">
                 <div class="control">
-                    <input class="input in-large" type="password" name="password" placeholder="Password">
+                    <input class="input in-large" type="password" name="password" placeholder="Sua Senha">
                 </div>
             </div>
             <button class="button is-block is-info is-large is-fullwidth">
-                Sign Up
+                Cadastrar
             </button>
         </form>
     </div>

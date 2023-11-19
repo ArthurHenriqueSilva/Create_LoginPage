@@ -4,7 +4,7 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='templates/assets', static_url_path='/templates/assets')
     app.config['SECRET_KEY'] = 'aqui fica o segredo'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,3 +27,4 @@ def create_app():
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
     return app
+
