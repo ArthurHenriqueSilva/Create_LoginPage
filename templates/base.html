@@ -12,11 +12,7 @@
             <nav class="navbar">
                 <div class="container">
                     <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-start">
-                            <a href="{{ url_for('main.index') }}">
-                                <img src="/templates/assets/logo.svg" alt="Logo" style="width: 100px;">
-                            </a>
-                        </div>
+
                         <div class="navbar-end is-size-5" style="margin-top: 1rem;">
                             <a href="{{url_for('main.index')}}" class="navbar-item {% if request.endpoint == 'main.index' %}is-active{% endif %}">
                                 Inicio
